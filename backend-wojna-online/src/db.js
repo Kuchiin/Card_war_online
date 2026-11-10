@@ -1,6 +1,8 @@
 const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 
-const db = new sqlite3.Database('./database.sqlite');
+const databasePath = path.resolve(process.env.DB_PATH || './database.sqlite');
+const db = new sqlite3.Database(databasePath);
 
 db.serialize(() => {
   db.run(`

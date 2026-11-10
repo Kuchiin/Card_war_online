@@ -6,7 +6,7 @@ console.log('GAME MQTT FILE LOADED');
 
 function initGameMQTT() {
   // Połączenie z brokerem MQTT
-  const client = mqtt.connect('mqtt://localhost:1883');
+  const client = mqtt.connect(process.env.MQTT_URL || 'mqtt://localhost:1883');
 
   // Po nawiązaniu połączenia subskrybujemy akcje graczy
   client.on('connect', () => {

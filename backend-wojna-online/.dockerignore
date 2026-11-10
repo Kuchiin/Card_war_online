@@ -1,0 +1,5 @@
+node_modules
+.git
+*.log
+database.sqlite
+testowe_jsony

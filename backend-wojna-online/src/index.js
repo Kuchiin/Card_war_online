@@ -10,7 +10,7 @@ const authRoutes = require('./routes/auth');
 const gamesRoutes = require('./routes/games');
 
 const app = express();
-const PORT = 4000;
+const PORT = Number(process.env.PORT || 4000);
 
 // Pozwalamy frontendowi łączyć się z backendem z innego originu
 app.use(cors());
@@ -19,7 +19,7 @@ app.use(cors());
 app.use(express.json());
 
 // Sekret używany do podpisywania i weryfikacji JWT
-app.set('jwt-secret', 'super_tajny_klucz');
+app.set('jwt-secret', process.env.JWT_SECRET || 'super_tajny_klucz');
 
 // Rejestracja endpointów REST
 app.use('/users', usersRoutes);   // rejestracja użytkowników
@@ -45,6 +45,6 @@ initLobby(io);
 initGameMQTT();
 
 // Start serwera backendowego
-server.listen(PORT, () => {
-  console.log(`Backend działa na http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Backend działa na porcie ${PORT}`);
 });

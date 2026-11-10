@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:4000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 type RegisterData = {
   nick: string;
@@ -70,7 +70,7 @@ export async function getProfile() {
 }
 
 export async function createGame(token: string) {
-  const res = await fetch('http://localhost:4000/games', {
+  const res = await fetch(`${API_URL}/games`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -82,7 +82,7 @@ export async function createGame(token: string) {
 }
 
 export async function joinGame(gameId: string, token: string) {
-  const res = await fetch(`http://localhost:4000/games/${gameId}/join`, {
+  const res = await fetch(`${API_URL}/games/${gameId}/join`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -95,13 +95,13 @@ export async function joinGame(gameId: string, token: string) {
 
 
 export async function getUserById(id: number) {
-  const res = await fetch(`http://localhost:4000/users/${id}`);
+  const res = await fetch(`${API_URL}/users/${id}`);
   if (!res.ok) throw new Error('Nie udało się pobrać użytkownika');
   return res.json();
 }
 
 export async function getGame(gameId: string, token: string) {
-  const res = await fetch(`http://localhost:4000/games/${gameId}`, {
+  const res = await fetch(`${API_URL}/games/${gameId}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!res.ok) throw new Error('Nie udało się pobrać gry');
