@@ -21,6 +21,16 @@ PUBLIC_SOCKET_URL=http://YOUR_SERVER_IP:4000
 PUBLIC_MQTT_WS_URL=ws://YOUR_SERVER_IP:9001
 ```
 
+The production Compose stack also includes Caddy. Point the public DNS names at
+the server, open ports 80 and 443, and set the production values to HTTPS/WSS
+URLs before rebuilding:
+
+```env
+PUBLIC_API_URL=https://cardwar-api.duckdns.org
+PUBLIC_SOCKET_URL=https://cardwar-api.duckdns.org
+PUBLIC_MQTT_WS_URL=wss://cardwar-mqtt.duckdns.org
+```
+
 To stop it:
 
 ```bash

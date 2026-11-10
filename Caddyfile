@@ -1,0 +1,11 @@
+cardwar-online.duckdns.org {
+    reverse_proxy frontend:3000
+}
+
+cardwar-api.duckdns.org {
+    reverse_proxy backend:4000
+}
+
+cardwar-mqtt.duckdns.org {
+    reverse_proxy mqtt:9001
+}
