@@ -134,11 +134,34 @@ export default function GamePage() {
     );
     socketRef.current = socket;
 
-    // Informujemy serwer, że dołączyliśmy do pokoju gry
-    socket.emit('join-game-room', { gameId, nick: myNick, userId });
+    socket.on('connect', () => {
+      console.log('Socket.IO connected:', socket.id);
 
+      socket.emit(
+        'join-game-room',
+        { gameId, nick: myNick, userId },
+        (status: { ready: boolean }) => {
+          console.log('Game room status:', status);
+          setReady(status?.ready === true);
+        }
+      );
+    });
+
+    socket.on('connect_error', (error) => {
+      console.error('Socket.IO connection error:', error.message);
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.warn('Socket.IO disconnected:', reason);
+      setReady(false);
+    });
+
+    // Informujemy serwer, że dołączyliśmy do pokoju gry
     // Obaj gracze są gotowi
-    socket.on('room-ready', () => setReady(true));
+    socket.on('room-ready', () => {
+      console.log('Game room is ready');
+      setReady(true);
+    });
 
     // Wiadomości czatu od graczy
     socket.on('chat-message', (msg) => {
@@ -242,10 +265,26 @@ export default function GamePage() {
 
   // Wysłanie ruchu zagrania karty przez MQTT
   const playCard = () => {
-    if (!userId || gameOver || !ready) return;
+    if (!userId || gameOver || !ready) {
+      console.warn('Card play blocked:', {
+        userId,
+        gameOver: Boolean(gameOver),
+        ready
+      });
+      return;
+    }
+
+    if (!client.connected) {
+      console.error('Card play blocked: MQTT is not connected');
+      return;
+    }
+
     client.publish(
       `game/${gameId}/action`,
-      JSON.stringify({ type: 'PLAY_CARD', playerId: userId })
+      JSON.stringify({ type: 'PLAY_CARD', playerId: userId }),
+      (error) => {
+        if (error) console.error('MQTT card publish failed:', error);
+      }
     );
   };
 

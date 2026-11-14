@@ -7,7 +7,7 @@ module.exports = function initLobby(io) {
   io.on('connection', (socket) => {
 
     // Gracz dołącza do pokoju konkretnej gry
-    socket.on('join-game-room', ({ gameId, nick, userId }) => {
+    socket.on('join-game-room', ({ gameId, nick, userId }, acknowledge) => {
       const room = `game-${gameId}`;
       socket.join(room); // dołączenie do pokoju socket.io
 
@@ -23,8 +23,14 @@ module.exports = function initLobby(io) {
 
       // Jeśli w pokoju są już 2 osoby, gra może się rozpocząć
       const clients = io.sockets.adapter.rooms.get(room);
-      if (clients && clients.size >= 2) {
+      const ready = Boolean(clients && clients.size >= 2);
+
+      if (ready) {
         io.to(room).emit('room-ready');
+      }
+
+      if (typeof acknowledge === 'function') {
+        acknowledge({ ready });
       }
     });
 
